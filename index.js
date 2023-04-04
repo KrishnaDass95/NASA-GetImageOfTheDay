@@ -1,8 +1,9 @@
-console.log('NASA test');
 // API KEY -> IFB5kdYEnhqJ4BckAoTULkC2aLPbVKzHeJcSTjiw
 
 // Elements
 const imgContainer = document.querySelector('.image-container');
+const dateElement = document.querySelector('#search-input');
+const searchButton = document.querySelector('#search-form');
 
 
 function renderUI(data){
@@ -15,20 +16,34 @@ function renderUI(data){
 }
 
 
-const url = "https://api.nasa.gov/planetary/apod";
-const queryParams = {
-    date: '',
-    api_key: 'IFB5kdYEnhqJ4BckAoTULkC2aLPbVKzHeJcSTjiw'
+function getCurrentImageOfTheDay(date){
+    const url = "https://api.nasa.gov/planetary/apod";
+    const queryParams = {
+        date: date,
+        api_key: 'IFB5kdYEnhqJ4BckAoTULkC2aLPbVKzHeJcSTjiw'
+    }
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    console.log("query string", queryString);
+
+    fetch(`${url}?${queryString}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("api requested data -> ",data);
+            imgContainer.innerHTML = renderUI(data);
+        })
+        .catch((error) =>  console.log(error))
+
 }
 
-const queryString = new URLSearchParams(queryParams).toString();
-console.log("query string", queryString);
+function getImageOfTheDay(e){
+    e.preventDefault();
+    let datePicked = dateElement.value
+    console.log('date picked ',datePicked);
+    getCurrentImageOfTheDay(datePicked);
+}
 
-fetch(`${url}?${queryString}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log("api requested data -> ",data);
-        imgContainer.innerHTML = renderUI(data);
-    })
-    .catch((error) =>  console.log(error))
+getCurrentImageOfTheDay('');
 
+// globalEventListener('click', searchButton, getDate);
+searchButton.addEventListener('click', getImageOfTheDay);
