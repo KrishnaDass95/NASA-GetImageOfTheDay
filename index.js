@@ -5,6 +5,8 @@ const imgContainer = document.querySelector('.image-container');
 const dateElement = document.querySelector('#search-input');
 const searchButton = document.querySelector('#search-form');
 const ulElement = document.querySelector('.ul-searches');
+
+
 let datesArr = [];
 if(localStorage.getItem('dates')){
     datesArr = localStorage.getItem('dates');
@@ -47,7 +49,7 @@ function getCurrentImageOfTheDay(date = ''){
 
 function renderPreviousSearch(date){
     return `
-    <li><a href="${getCurrentImageOfTheDay(date)}">${date}</a></li>
+    <li><button class="previous">${date}</button></li>
     `
 
 }
@@ -81,5 +83,19 @@ function getImageOfTheDay(e){
 
 getCurrentImageOfTheDay();
 
-// globalEventListener('click', searchButton, getDate);
+
+function globalEventListener(type, selector, callback){
+    document.addEventListener(type, e => {
+        if(e.target.matches(selector)) callback(e);
+    })
+}
+
+function showPrevious(e){
+    let date = e.target.textContent;
+    getCurrentImageOfTheDay(date);
+
+}
+
+
 searchButton.addEventListener('click', getImageOfTheDay);
+globalEventListener('click', '.previous', showPrevious);
