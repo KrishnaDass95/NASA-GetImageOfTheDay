@@ -14,8 +14,9 @@ img{
     width: 50%;
 }
 .previous{
-    /* border: none; */
+    border: none;
     margin: 10px;
     height: 40px;
-    background-color: ;
+    background-color: lightgray;
+    cursor: pointer;
 }

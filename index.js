@@ -38,12 +38,19 @@ function getCurrentImageOfTheDay(date = ''){
     console.log("query string", queryString);
 
     fetch(`${url}?${queryString}`)
-        .then(response => response.json())
+        .then(response => {
+            if(response.status === 400){
+                alert("please enter a date before today")
+            }
+            return response.json()})
         .then(data => {
             console.log("api requested data -> ",data);
             imgContainer.innerHTML = renderUI(data);
         })
-        .catch((error) =>  console.log(error))
+        .catch((error) =>  {
+            console.log("error message", error)
+            imgContainer.innerHTML = error.msg;
+        })
 
 }
 
