@@ -4,6 +4,15 @@
 const imgContainer = document.querySelector('.image-container');
 const dateElement = document.querySelector('#search-input');
 const searchButton = document.querySelector('#search-form');
+const ulElement = document.querySelector('.ul-searches');
+let datesArr = [];
+if(localStorage.getItem('dates')){
+    datesArr = localStorage.getItem('dates');
+}
+else{
+    localStorage.setItem('dates', JSON.stringify(datesArr));
+}
+datesArr = JSON.parse(localStorage.getItem('dates'));
 
 
 function renderUI(data){
@@ -16,7 +25,7 @@ function renderUI(data){
 }
 
 
-function getCurrentImageOfTheDay(date){
+function getCurrentImageOfTheDay(date = ''){
     const url = "https://api.nasa.gov/planetary/apod";
     const queryParams = {
         date: date,
@@ -36,14 +45,41 @@ function getCurrentImageOfTheDay(date){
 
 }
 
+function renderPreviousSearch(date){
+    return `
+    <li><a href="${getCurrentImageOfTheDay(date)}">${date}</a></li>
+    `
+
+}
+
+function addSearchToHistory(){
+    ulElement.innerHTML = "";
+    datesArr.forEach((date) => {
+        ulElement.innerHTML += renderPreviousSearch(date);
+    })
+}
+
+
+function saveSearch(dateToSave){
+    if(dateToSave){
+        datesArr.push(dateToSave);
+        localStorage.setItem('dates', JSON.stringify(datesArr));
+    }
+    
+}
+
+
 function getImageOfTheDay(e){
     e.preventDefault();
     let datePicked = dateElement.value
     console.log('date picked ',datePicked);
     getCurrentImageOfTheDay(datePicked);
+    saveSearch(datePicked);
+    addSearchToHistory();
+    
 }
 
-getCurrentImageOfTheDay('');
+getCurrentImageOfTheDay();
 
 // globalEventListener('click', searchButton, getDate);
 searchButton.addEventListener('click', getImageOfTheDay);
